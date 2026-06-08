@@ -10,7 +10,7 @@ app.secret_key = "musicify123"
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'sumitpatel05'
+app.config['MYSQL_PASSWORD'] = 'your_password'
 app.config['MYSQL_DB'] = 'musicify_db'
 
 mysql = MySQL(app)
