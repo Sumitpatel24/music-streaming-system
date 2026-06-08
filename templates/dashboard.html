@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+<style>
+body{
+    background:linear-gradient(135deg,#0d1117,#000000);
+    color:white;
+    min-height:100vh;
+}
+
+.dashboard-title{
+    margin-bottom:30px;
+    font-weight:bold;
+    font-size:50px;
+    text-shadow:0 0 20px rgba(0,255,150,0.4);
+}
+
+.card-box{
+    background:linear-gradient(145deg,#161b22,#1c2128);
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:25px;
+    min-height:180px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    transition:0.4s;
+    border:1px solid #30363d;
+    box-shadow:0 0 15px rgba(0,255,150,0.08);
+}
+
+.card-box:hover{
+    transform:translateY(-8px) scale(1.02);
+    box-shadow:0 0 30px rgba(0,255,150,0.25);
+}
+
+.card-box h2{
+    font-size:42px;
+    font-weight:bold;
+    color:#1fdf64;
+}
+
+.card-box p{
+    font-size:20px;
+    color:#c9d1d9;
+}
+
+.table{
+    width:100%;
+    font-size:24px;
+    color:white;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.table thead th{
+    background:#161b22;
+    color:white;
+    font-size:28px;
+    font-weight:800;
+    padding:25px;
+    text-align:center;
+}
+
+.table tbody td{
+    font-size:24px;
+    font-weight:600;
+    padding:25px;
+    text-align:center;
+    vertical-align:middle;
+}
+
+.table thead th,
+.table tbody td{
+    transition:0.4s;
+    cursor:pointer;
+}
+
+.table thead th:hover,
+.table tbody td:hover{
+
+    color:black !important;
+
+    background:linear-gradient(
+        135deg,
+        #ff0080,
+        #7928ca,
+        #00c6ff
+    );
+
+    box-shadow:
+        0 0 10px #ff0080,
+        0 0 20px #7928ca,
+        0 0 30px #00c6ff;
+
+    border-radius:10px;
+
+    transform:scale(1.05);
+
+    font-weight:bold;
+}
+
+.song-img{
+    width:110px;
+    height:110px;
+    object-fit:cover;
+    border-radius:15px;
+    border:3px solid #30363d;
+}
+
+audio{
+    width:320px;
+}
+
+.btn-warning,
+.btn-danger{
+    font-size:20px;
+    font-weight:bold;
+    padding:12px 22px;
+    min-width:130px;
+    border-radius:12px;
+    margin:4px;
+}
+
+.btn{
+    border-radius:12px;
+    font-weight:700;
+}
+
+.list-group-item{
+    background:#161b22;
+    color:white;
+    border:1px solid #30363d;
+    font-size:20px;
+}
+
+.admin-panel{
+    background:linear-gradient(145deg,#161b22,#1c2128);
+    padding:25px;
+    border-radius:20px;
+    margin-top:20px;
+    border:1px solid #30363d;
+}
+
+#songSearch{
+    background:#161b22;
+    color:white !important;
+    border:2px solid #1DB954;
+    border-radius:15px;
+    padding:15px 20px;
+    font-size:22px;
+}
+
+#songSearch::placeholder{
+    color:#c9d1d9;
+    opacity:1;
+}
+
+#songSearch:focus{
+    background:#161b22;
+    color:white !important;
+    outline:none;
+    border-color:#00ff88;
+    box-shadow:0 0 20px rgba(0,255,150,0.5);
+}
+
+#songSearch::placeholder{
+    color:#c9d1d9;
+    opacity:1;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+    <h1 class="dashboard-title">
+        Admin Dashboard
+    </h1>
+
+    <p class="text-light">
+        Welcome Admin 👋
+    </p>
+
+    <div class="row">
+
+    <div class="col-md-4">
+        <div class="card-box">
+            <h2>{{ total_users }}</h2>
+            <p>Total Users</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-box">
+            <h2>{{ total_reviews }}</h2>
+            <p>⭐ Total Reviews</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-box">
+            <h2>{{ total_playlists }}</h2>
+            <p>🎵 Total Playlists</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-box">
+            <h2>{{ total_songs }}</h2>
+            <p>Total Songs</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-box">
+            <h2>{{ total_favorites }}</h2>
+            <p>Total Favorites</p>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card-box">
+            <h2>{{ total_likes }}</h2>
+            <p>Total Likes ❤️</p>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card-box">
+
+            {% if most_song %}
+                <h2>{{ most_song[0] }}</h2>
+            {% else %}
+                <h2>No Song</h2>
+            {% endif %}
+
+            <p>❤️ Most Favorite Song</p>
+
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card-box">
+
+            <h2>🏆 Most Played Song</h2>
+
+            {% if most_played_song %}
+                <h3>{{ most_played_song[0] }}</h3>
+                <p>{{ most_played_song[1] }} Plays</p>
+            {% else %}
+                <p>No Songs Found</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card-box">
+
+            <h2>⭐ Top Rated Song</h2>
+
+            {% if top_rated_song %}
+                <h3>{{ top_rated_song[0] }}</h3>
+                <p>{{ "%.1f"|format(top_rated_song[1]) }}/5 Rating</p>
+            {% else %}
+                <p>No Ratings Yet</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card-box">
+            <h2>Admin</h2>
+            <p>Control Panel</p>
+        </div>
+    </div>
+
+</div>
+
+    <div class="mb-4">
+
+        <a href="/add_song" class="btn btn-success">
+            Add Song
+        </a>
+
+        <a href="/songs" class="btn btn-primary">
+            View Songs
+        </a>
+
+        <a href="/logout" class="btn btn-danger">
+            Logout
+        </a>
+        <a href="/manage_users" class="btn btn-info">
+           Manage Users
+        </a>
+
+    </div>
+    
+    <div class="col-md-4">
+    <div class="card-box">
+        <h2>{{ total_downloads }}</h2>
+        <p>📥 Total Downloads</p>
+    </div>
+    </div>
+    <h3 class="mt-4">
+        Recent Songs
+    </h3>
+
+    <ul class="list-group mb-4">
+
+        {% for song in songs[:5] %}
+        <li class="list-group-item">
+            🎵 {{ song[1] }} - {{ song[2] }}
+        </li>
+        {% endfor %}
+
+    </ul>
+
+
+<h3 class="mb-4 text-center"
+    style="
+    font-size:40px;
+    font-weight:bold;
+    color:#1DB954;
+    text-shadow:0 0 15px rgba(29,185,84,0.5);">
+
+    🎵 Song List
+
+</h3>
+
+<div class="mb-4">
+
+    <input
+        type="text"
+        id="songSearch"
+        class="form-control"
+        placeholder="🔍 Search Song Name, Singer or Category..."
+        onkeyup="searchSongs()"
+        style="
+        background:#161b22;
+        color:white;
+        border:2px solid #1DB954;
+        border-radius:15px;
+        padding:18px 25px;
+        font-size:24px;
+        box-shadow:0 0 15px rgba(29,185,84,0.2);">
+
+</div>
+
+<div id="notFoundMessage"
+     style="
+     display:none;
+     background:#161b22;
+     color:#ff4d4f;
+     font-size:30px;
+     font-weight:bold;
+     padding:20px;
+     border-radius:15px;
+     text-align:center;
+     margin-bottom:20px;
+     border:2px solid #ff4d4f;
+     box-shadow:0 0 20px rgba(255,77,79,0.3);">
+
+     ❌ This Song Is Not Found
+
+</div>
+
+<table id="songTable" class="table table-dark table-striped table-bordered">
+
+    <thead>
+
+        <tr>
+            <th>ID</th>
+            <th>Song Name</th>
+            <th>Singer</th>
+            <th>Category</th>
+            <th>Image</th>
+            <th>Audio</th>
+            <th>Action</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for song in songs %}
+
+        <tr>
+
+            <td>{{ loop.index }}</td>
+
+            <td>{{ song[1] }}</td>
+
+            <td>{{ song[2] }}</td>
+
+            <td>{{ song[5] }}</td>
+
+            <td>
+
+                {% if song[4] %}
+                    <img src="{{ url_for('static', filename='images/' + song[4]) }}"
+                         class="song-img">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/music.jpg') }}"
+                         class="song-img">
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <audio controls style="width:200px;">
+                    <source src="{{ url_for('static', filename='songs/' + song[3]) }}">
+                </audio>
+
+            </td>
+
+            <td>
+
+                <a href="/edit_song/{{ song[0] }}"
+                   class="btn btn-warning btn-sm">
+                    Edit
+                </a>
+
+                <form action="/delete_song/{{ song[0] }}"
+                      method="POST"
+                      style="display:inline;">
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger btn-sm"
+                        onclick="return confirm('Delete this song?')">
+
+                        Delete
+
+                    </button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+<script>
+
+function searchSongs() {
+
+    let input = document.getElementById("songSearch");
+    let filter = input.value.toLowerCase();
+
+    let table = document.getElementById("songTable");
+    let tr = table.getElementsByTagName("tr");
+
+    let found = false;
+
+    for(let i = 1; i < tr.length; i++) {
+
+        let rowText = tr[i].innerText.toLowerCase();
+
+        if(rowText.includes(filter)) {
+
+            tr[i].style.display = "";
+            found = true;
+
+        } else {
+
+            tr[i].style.display = "none";
+
+        }
+    }
+
+    let msg = document.getElementById("notFoundMessage");
+
+    if(filter !== "" && !found){
+        msg.style.display = "block";
+    }else{
+        msg.style.display = "none";
+    }
+}
+
+</script>
+</table>
+</body>
+</html>

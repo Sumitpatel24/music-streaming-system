@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music Library</title>
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <style>
+
+ body{
+    background:linear-gradient(135deg,#000000,#0d1117);
+    color:white;
+    min-height:100vh;
+}
+
+.card{
+    background:#161b22;
+    border:none;
+    border-radius:20px;
+    padding:25px;
+    text-align:center;
+    margin-bottom:30px;
+    transition:0.4s;
+    box-shadow:0 0 15px rgba(0,255,150,0.08);
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 0 30px rgba(0,255,150,0.35);
+}
+
+.song-image{
+    width:230px;
+    height:230px;
+    object-fit:cover;
+    border-radius:15px;
+    transition:0.4s;
+}
+
+.song-image:hover{
+    transform:scale(1.05);
+}
+
+h1{
+    font-size:55px;
+    font-weight:bold;
+}
+
+.form-control{
+    border-radius:30px;
+    height:50px;
+}
+
+.category{
+    color:#ffc107;
+    font-weight:bold;
+    font-size:18px;
+}
+
+.text-danger{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.text-info{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.btn{
+    border-radius:12px;
+    font-weight:bold;
+}
+
+audio{
+    border-radius:30px;
+}
+
+.container{
+    padding-bottom:50px;
+}
+
+/* ===== TOP BUTTONS ===== */
+
+.top-buttons a{
+    margin-left:8px;
+    transition:all 0.3s ease;
+}
+
+/* Profile Button */
+
+.top-buttons .btn-primary:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:
+    0 0 15px #2563eb,
+    0 0 30px rgba(37,99,235,0.8);
+
+}
+
+/* Favorites Button */
+
+.top-buttons .btn-warning:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:
+    0 0 15px #ffc107,
+    0 0 30px rgba(255,193,7,0.8);
+
+}
+
+/* Download History Button */
+
+.top-buttons .btn-info:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:
+    0 0 15px #22d3ee,
+    0 0 30px rgba(34,211,238,0.8);
+
+}
+
+/* Logout Button */
+
+.top-buttons .btn-danger:hover{
+
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:
+    0 0 15px #ef4444,
+    0 0 30px rgba(239,68,68,0.8);
+
+}
+    </style>
+
+</head>
+
+<body>
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h1>🎵 Music Library</h1>
+
+            <p class="text-info">
+                Welcome, {{ session['user'] }} ❤️
+            </p>
+
+            <p class="text-success fs-5">
+                Total Songs: {{ songs|length }}
+            </p>
+
+        </div>
+
+        <div class="top-buttons">
+
+            <a href="/profile" class="btn btn-info">
+                Profile
+            </a>
+
+            <a href="/favorites" class="btn btn-warning">
+                ❤️ My Favorites
+            </a>
+            <a href="/download_history" class="btn btn-info">
+                📥 Download History
+            </a>
+            <a href="/logout" class="btn btn-danger">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+
+            <form method="GET" action="/songs">
+
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search Song">
+
+                    <button class="btn btn-success">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <form method="GET" action="/songs">
+
+                <div class="input-group">
+
+                    <select name="category" class="form-control">
+
+                        <option value="">All Categories</option>
+                        <option value="Bollywood">Bollywood</option>
+                        <option value="Punjabi">Punjabi</option>
+                        <option value="English">English</option>
+                        <option value="LoFi">LoFi</option>
+                        <option value="Bhajan">Bhajan</option>
+
+                    </select>
+
+                    <button class="btn btn-warning">
+                        Filter
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        {% for song in songs %}
+
+        <div class="col-md-4">
+
+            <div class="card">
+
+                {% if song[4] %}
+                    <img src="{{ url_for('static', filename='images/' + song[4]) }}"
+                         class="song-image mb-3">
+                {% else %}
+                    <img src="{{ url_for('static', filename='images/music.jpg') }}"
+                         class="song-image mb-3">
+                {% endif %}
+
+               <h3 class="text-white fw-bold">
+                 {{ song[1] }}
+                </h3> 
+
+                <p class="text-light">
+                    Singer: {{ song[2] }}
+                </p>
+
+                <p class="category">
+                 Category: {{ song[5] }}
+               </p>
+
+                 <p class="text-danger">
+                ❤️ Likes: {{ song[6] }}
+                </p>
+                 {% for rate in ratings %}
+
+             {% if rate[0] == song[0] %}
+
+            <p class="text-warning">
+                 ⭐ Rating: {{ "%.1f"|format(rate[1]) }}/5
+             </p>
+
+               {% endif %}
+
+               {% endfor %}
+               <p class="text-info">
+               ▶️ Plays: {{ song[7] }}
+               </p>
+
+              <audio
+                controls
+                style="width:100%;"
+                onplay="saveRecentSong({{ song[0] }})">
+
+                <source src="{{ url_for('static', filename='songs/' + song[3]) }}">
+            </audio>
+
+                <br><br>
+
+                <a href="/favorite/{{ song[0] }}"
+                class="btn btn-danger w-100">
+              ❤️ Favorite
+          </a>
+          
+        <form action="/add_review/{{ song[0] }}"
+         method="POST"
+        class="mt-3">
+
+        <select name="rating"
+            class="form-control mb-2"
+            required>
+
+        <option value="">⭐ Rating</option>
+        <option value="5">⭐⭐⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
+
+        </select>
+
+        <textarea
+           name="comment"
+           class="form-control mb-2"
+           placeholder="Write Review..."
+           required>
+        </textarea>
+
+        <button class="btn btn-info w-100">
+            Submit Review
+         </button>
+
+          </form>
+          <a href="/select_playlist/{{ song[0] }}"
+            class="btn btn-success w-100 mt-2">
+            ➕ Add To Playlist
+           </a>
+            
+            <a href="/download/{{ song[3] }}"
+            class="btn btn-info w-100 mt-2">
+            ⬇ Download Song
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+
+function saveRecentSong(songId){
+
+    fetch('/play_song/' + songId)
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch(error => console.log(error));
+
+}
+
+</script>
+    <script>
+
+    const audios = document.querySelectorAll("audio");
+
+    audios.forEach(audio => {
+
+    audio.addEventListener("play", function() {
+
+        audios.forEach(otherAudio => {
+
+            if (otherAudio !== this) {
+                otherAudio.pause();
+            }
+
+        });
+
+    });
+
+   });
+
+</script>
+</body>
+</html>

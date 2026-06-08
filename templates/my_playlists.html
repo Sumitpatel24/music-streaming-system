@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Playlists</title>
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:linear-gradient(135deg,#0d1117,#000000);
+            min-height:100vh;
+            color:white;
+            font-family:Arial,sans-serif;
+        }
+
+        .container{
+            padding-top:20px;
+            padding-bottom:50px;
+        }
+
+        .header{
+            text-align:center;
+            padding:40px 0 20px;
+        }
+
+        .header h1{
+            font-size:50px;
+            font-weight:bold;
+            text-shadow:0 0 15px rgba(29,185,84,0.5);
+        }
+
+        .header p{
+            color:#8b949e;
+            font-size:18px;
+        }
+
+        .top-buttons{
+            text-align:center;
+            margin-bottom:40px;
+        }
+
+        .top-buttons .btn{
+            margin:5px;
+            padding:12px 25px;
+            border-radius:12px;
+            font-weight:bold;
+        }
+
+        .stats-box{
+            background:#161b22;
+            border-radius:20px;
+            padding:20px;
+            text-align:center;
+            margin-bottom:30px;
+            box-shadow:0 0 20px rgba(0,255,150,0.15);
+        }
+
+        .stats-box h2{
+            color:#1DB954;
+            font-size:45px;
+            font-weight:bold;
+        }
+
+        .playlist-card{
+            background:#161b22;
+            border-radius:20px;
+            padding:30px;
+            text-align:center;
+            margin-bottom:25px;
+            transition:0.3s;
+            height:100%;
+            border:1px solid #2d333b;
+            overflow:hidden;
+            position:relative;
+            box-shadow:0 0 20px rgba(0,255,150,0.10);
+        }
+
+        .playlist-card:hover{
+            transform:translateY(-8px);
+            border-color:#1DB954;
+            box-shadow:0 0 30px rgba(0,255,150,0.35);
+        }
+
+        .playlist-icon{
+            font-size:70px;
+            margin-bottom:15px;
+            transition:0.3s;
+        }
+
+        .playlist-card:hover .playlist-icon{
+            transform:scale(1.15);
+        }
+
+        .playlist-name{
+            font-size:28px;
+            font-weight:bold;
+            color:white;
+            margin-bottom:10px;
+        }
+
+        .playlist-id{
+            color:#8b949e;
+            margin-bottom:20px;
+        }
+
+        .btn-open{
+            background:#1DB954;
+            color:white;
+            border:none;
+            width:100%;
+            margin-bottom:10px;
+            border-radius:10px;
+            padding:10px;
+            font-weight:bold;
+            letter-spacing:1px;
+        }
+
+        .btn-open:hover{
+            background:#18a34a;
+            color:white;
+        }
+
+        .btn-delete{
+            width:100%;
+            border-radius:10px;
+            font-weight:bold;
+        }
+
+        .empty-box{
+            text-align:center;
+            background:#161b22;
+            padding:40px;
+            border-radius:20px;
+            box-shadow:0 0 20px rgba(0,255,150,0.15);
+        }
+
+        ::-webkit-scrollbar{
+            width:8px;
+        }
+
+        ::-webkit-scrollbar-thumb{
+            background:#1DB954;
+            border-radius:10px;
+        }
+
+        ::-webkit-scrollbar-track{
+            background:#161b22;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>🎵 My Playlists</h1>
+
+        <p>
+            Manage your personal music collections
+        </p>
+
+    </div>
+
+    <div class="top-buttons">
+
+        <a href="/create_playlist"
+           class="btn btn-success">
+            ➕ Create Playlist
+        </a>
+
+        <a href="/songs"
+           class="btn btn-primary">
+            🎵 Music Library
+        </a>
+
+    </div>
+
+    <div class="stats-box">
+
+        <h2>{{ playlists|length }}</h2>
+
+        <p>Total Playlists</p>
+
+    </div>
+
+    {% if playlists %}
+
+    <div class="row">
+
+        {% for playlist in playlists %}
+
+        <div class="col-md-4">
+
+            <div class="playlist-card">
+
+                {% if playlist[3] %}
+
+                <img src="{{ url_for('static', filename='playlists/' + playlist[3]) }}"
+                     style="
+                     width:140px;
+                     height:140px;
+                     object-fit:cover;
+                     border-radius:20px;
+                     margin-bottom:15px;
+                     box-shadow:0 0 20px rgba(0,255,150,0.4);">
+
+                {% else %}
+
+                <div class="playlist-icon">
+                    📂
+                </div>
+
+                {% endif %}
+
+                <div class="playlist-name">
+                    {{ playlist[2] }}
+                </div>
+
+                <div class="playlist-id">
+                    <h5>🎵 Personal Music Collection</h5>
+                </div>
+
+                <a href="/playlist/{{ playlist[0] }}"
+                   class="btn btn-open">
+                   🎶 Open Playlist
+                </a>
+
+                <a href="/rename_playlist/{{ playlist[0] }}"
+                   class="btn btn-warning w-100 mb-2">
+                   ✏ Rename Playlist
+                </a>
+
+                <a href="/delete_playlist/{{ playlist[0] }}"
+                   class="btn btn-danger btn-delete"
+                   onclick="return confirm('Delete this playlist?')">
+                   🗑 Delete Playlist
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-box">
+
+        <h2>😔 No Playlists Found</h2>
+
+        <p>
+            Create your first playlist now.
+        </p>
+
+        <a href="/create_playlist"
+           class="btn btn-success">
+           ➕ Create Playlist
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

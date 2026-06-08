@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+   <style>
+    body{
+    background:#0d1117;
+    color:white;
+    min-height:100vh;
+}
+
+/* Profile Card */
+
+.profile-card{
+    max-width:700px;
+    margin:50px auto;
+    background:#161b22;
+    padding:40px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 0 25px rgba(0,255,150,0.15);
+    transition:0.3s;
+}
+
+.profile-card:hover{
+    transform:translateY(-5px);
+    box-shadow:
+    0 0 20px rgba(29,185,84,0.4),
+    0 0 40px rgba(29,185,84,0.2);
+}
+
+/* Title */
+
+.profile-title{
+    font-size:42px;
+    font-weight:bold;
+    margin-bottom:25px;
+    color:white;
+    text-shadow:
+    0 0 10px #8b5cf6,
+    0 0 20px #8b5cf6;
+}
+
+/* Profile Image */
+
+.profile-img{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid #0d6efd;
+    margin-bottom:20px;
+    transition:0.3s;
+}
+
+.profile-img:hover{
+    transform:scale(1.05);
+
+    box-shadow:
+    0 0 20px #0d6efd,
+    0 0 40px #1DB954;
+}
+
+/* Form */
+
+.form-control{
+    background:#21262d;
+    color:white;
+    border:1px solid #30363d;
+}
+
+.form-control:focus{
+    background:#21262d;
+    color:white;
+    border-color:#1DB954;
+    box-shadow:0 0 15px rgba(29,185,84,0.5);
+}
+
+/* Info Boxes */
+
+.info-box{
+    background:#161b22;
+    border:1px solid #30363d;
+    border-radius:15px;
+    padding:20px;
+    margin-top:20px;
+    box-shadow:0 0 15px rgba(29,185,84,0.15);
+    transition:0.3s;
+    cursor:pointer;
+}
+
+.info-box:hover{
+
+    transform:translateY(-5px) scale(1.02);
+
+    border-color:#1DB954;
+
+    box-shadow:
+    0 0 15px #1DB954,
+    0 0 30px rgba(29,185,84,0.7);
+}
+
+/* Username Email Favorites Text */
+
+.info-box strong{
+    font-size:22px;
+    color:#1DB954;
+    transition:0.3s;
+}
+
+.info-box:hover strong{
+
+    color:#00ff88;
+
+    text-shadow:
+    0 0 10px #00ff88,
+    0 0 20px #00ff88;
+}
+
+/* Recently Played List */
+
+.info-box ul{
+    list-style:none;
+    padding-left:0;
+    margin-top:15px;
+}
+
+.info-box li{
+    background:#21262d;
+    padding:12px 15px;
+    border-radius:10px;
+    margin-bottom:10px;
+    transition:0.3s;
+}
+
+.info-box li:hover{
+
+    transform:translateX(8px);
+
+    background:#1f2937;
+
+    box-shadow:
+    0 0 15px #1DB954,
+    0 0 25px rgba(29,185,84,0.7);
+}
+
+/* Upload Button */
+
+.btn-success{
+    transition:0.3s;
+}
+
+.btn-success:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 0 15px #22c55e,
+    0 0 30px rgba(34,197,94,0.8);
+}
+
+/* Buttons Area */
+
+.btn-area{
+    margin-top:25px;
+}    
+ /* Common Button Style */
+
+.action-btn{
+    color:white !important;
+    border:none !important;
+    border-radius:12px;
+    padding:10px 20px;
+    font-size:16px;
+    font-weight:bold;
+    text-decoration:none;
+    display:inline-block;
+    margin:5px;
+    transition:all 0.3s ease;
+    cursor:pointer;
+}
+
+.action-btn:hover{
+    color:white !important;
+    transform:translateY(-4px) scale(1.03);
+}
+
+/* Music Library */
+
+.btn-library{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+}
+
+.btn-library:hover{
+    box-shadow:
+    0 0 15px #2563eb,
+    0 0 30px rgba(37,99,235,0.7);
+}
+
+/* Favorites */
+
+.btn-favorites{
+    background:linear-gradient(135deg,#ff7b00,#ffb700);
+    color:black !important;
+}
+
+.btn-favorites:hover{
+    box-shadow:
+    0 0 15px #ffb700,
+    0 0 30px rgba(255,183,0,0.8);
+}
+
+/* Recently Played */
+
+.btn-recent{
+    background:linear-gradient(135deg,#06b6d4,#22d3ee);
+    color:black !important;
+}
+
+.btn-recent:hover{
+    box-shadow:
+    0 0 15px #22d3ee,
+    0 0 30px rgba(34,211,238,0.8);
+}
+
+/* My Playlists */
+
+.btn-playlist{
+    background:linear-gradient(135deg,#d946ef,#8b5cf6);
+}
+
+.btn-playlist:hover{
+    box-shadow:
+    0 0 15px #d946ef,
+    0 0 30px rgba(217,70,239,0.8);
+}
+
+/* Edit Profile */
+
+.btn-edit{
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+}
+
+.btn-edit:hover{
+    box-shadow:
+    0 0 15px #22c55e,
+    0 0 30px rgba(34,197,94,0.8);
+}
+
+/* Change Password */
+
+.btn-password{
+    background:linear-gradient(135deg,#facc15,#eab308);
+    color:black !important;
+}
+
+.btn-password:hover{
+    box-shadow:
+    0 0 15px #facc15,
+    0 0 30px rgba(250,204,21,0.8);
+}
+
+/* Delete Account */
+
+.btn-delete{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+}
+
+.btn-delete:hover{
+    box-shadow:
+    0 0 15px #ef4444,
+    0 0 30px rgba(239,68,68,0.8);
+}
+
+/* Logout */
+
+.btn-logout{
+    background:linear-gradient(135deg,#6b7280,#4b5563);
+}
+
+.btn-logout:hover{
+    box-shadow:
+    0 0 15px #9ca3af,
+    0 0 30px rgba(156,163,175,0.8);
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="profile-card">
+
+        <h1 class="profile-title">
+            👤 User Profile
+        </h1>
+
+        {% if user and user[5] %}
+
+<img src="{{ url_for('static', filename='profile/' + user[5]) }}"
+     width="150"
+     height="150"
+     class="rounded-circle mb-3">
+
+{% else %}
+
+<img src="https://via.placeholder.com/150"
+     width="150"
+     height="150"
+     class="rounded-circle mb-3">
+
+       {% endif %}
+
+        <form action="/upload_profile"
+              method="POST"
+              enctype="multipart/form-data"
+              class="mb-4">
+
+            <input
+                type="file"
+                name="profile_image"
+                class="form-control mb-2"
+                required>
+
+            <button
+                type="submit"
+                class="btn btn-success">
+                Upload Profile Photo
+            </button>
+
+        </form>
+
+        <div class="info-box">
+            <strong>Username:</strong>
+            {{ user[1] }}
+        </div>
+
+        <div class="info-box">
+            <strong>Email:</strong>
+            {{ user[2] }}
+        </div>
+
+        <div class="info-box">
+            <strong>Total Favorites:</strong>
+            {{ total_favorites }}
+        </div>
+
+        <div class="row mt-4">
+
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h2>❤️ {{ total_favorites }}</h2>
+                    <p>Total Favorites</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h2>📥 {{ total_downloads }}</h2>
+                    <p>Total Downloads</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <h2>📂 {{ total_playlists }}</h2>
+                    <p>Total Playlists</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>🎵 Recently Played Songs</strong>
+
+            <ul class="mt-3">
+
+                {% if recent_songs %}
+
+                    {% for song in recent_songs %}
+
+                    <li class="mb-2">
+                        🎵 {{ song[0] }} - {{ song[1] }}
+                    </li>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <li>No songs played yet.</li>
+
+                {% endif %}
+
+            </ul>
+
+        </div>
+
+        <div class="btn-area">
+
+            <a href="/songs" class="action-btn btn-library">
+                🎵 Music Library
+            </a>
+
+            <a href="/favorites" class="action-btn btn-favorites">
+                ❤️ Favorites
+            </a>
+
+            <a href="/recent_songs" class="action-btn btn-recent">
+                🕒 Recently Played
+            </a>
+
+            <a href="/my_playlists" class="action-btn btn-playlist">
+                📂 My Playlists
+            </a>
+
+            <a href="/edit_profile" class="action-btn btn-edit">
+                Edit Profile
+            </a>
+
+            <a href="/change_password" class="action-btn btn-password">
+                Change Password
+            </a>
+
+            <a href="/delete_account"
+               class="action-btn btn-delete"
+               onclick="return confirm('Are you sure? This account will be permanently deleted!')">
+                Delete Account
+            </a>
+
+            <a href="/logout" class="action-btn btn-logout">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
