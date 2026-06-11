@@ -419,9 +419,10 @@ audio{
 
             <td>
 
-                <audio controls style="width:200px;">
-                    <source src="{{ url_for('static', filename='songs/' + song[3]) }}">
-                </audio>
+                <audio controls>
+                 <source src="{{ url_for('static', filename='songs/' + song[5] + '/' + song[3]) }}"
+                  type="audio/mpeg">
+                  </audio>
 
             </td>
 

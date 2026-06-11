@@ -11,7 +11,7 @@
 
     <style>
 
- body{
+body{
     background:linear-gradient(135deg,#000000,#0d1117);
     color:white;
     min-height:100vh;
@@ -22,10 +22,17 @@
     border:none;
     border-radius:20px;
     padding:25px;
+    width:100%;
+    min-height:750px;
     text-align:center;
     margin-bottom:30px;
     transition:0.4s;
     box-shadow:0 0 15px rgba(0,255,150,0.08);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+    overflow:hidden;
 }
 
 .card:hover{
@@ -38,11 +45,17 @@
     height:230px;
     object-fit:cover;
     border-radius:15px;
-    transition:0.4s;
+    margin:auto;
 }
 
-.song-image:hover{
-    transform:scale(1.05);
+.song-title{
+    font-size:22px;
+    font-weight:bold;
+    width:100%;
+    color:white; 
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
 }
 
 h1{
@@ -77,66 +90,25 @@ h1{
 }
 
 audio{
-    border-radius:30px;
+    width:100%;
 }
 
 .container{
     padding-bottom:50px;
 }
 
-/* ===== TOP BUTTONS ===== */
+.row{
+    display:flex;
+    flex-wrap:wrap;
+}
+
+.col-md-4{
+    margin-bottom:25px;
+}
 
 .top-buttons a{
     margin-left:8px;
     transition:all 0.3s ease;
-}
-
-/* Profile Button */
-
-.top-buttons .btn-primary:hover{
-
-    transform:translateY(-4px) scale(1.05);
-
-    box-shadow:
-    0 0 15px #2563eb,
-    0 0 30px rgba(37,99,235,0.8);
-
-}
-
-/* Favorites Button */
-
-.top-buttons .btn-warning:hover{
-
-    transform:translateY(-4px) scale(1.05);
-
-    box-shadow:
-    0 0 15px #ffc107,
-    0 0 30px rgba(255,193,7,0.8);
-
-}
-
-/* Download History Button */
-
-.top-buttons .btn-info:hover{
-
-    transform:translateY(-4px) scale(1.05);
-
-    box-shadow:
-    0 0 15px #22d3ee,
-    0 0 30px rgba(34,211,238,0.8);
-
-}
-
-/* Logout Button */
-
-.top-buttons .btn-danger:hover{
-
-    transform:translateY(-4px) scale(1.05);
-
-    box-shadow:
-    0 0 15px #ef4444,
-    0 0 30px rgba(239,68,68,0.8);
-
 }
     </style>
 
@@ -237,107 +209,105 @@ audio{
 
     <div class="row">
 
-        {% for song in songs %}
+{% for song in songs %}
 
-        <div class="col-md-4">
+<div class="col-lg-4 col-md-6 mb-4">
 
-            <div class="card">
+    <div class="card">
 
-                {% if song[4] %}
-                    <img src="{{ url_for('static', filename='images/' + song[4]) }}"
-                         class="song-image mb-3">
-                {% else %}
-                    <img src="{{ url_for('static', filename='images/music.jpg') }}"
-                         class="song-image mb-3">
-                {% endif %}
+        {% if song[4] %}
+        <img src="{{ url_for('static', filename='images/' + song[4]) }}"
+             class="song-image mb-3">
+        {% else %}
+        <img src="{{ url_for('static', filename='images/music.jpg') }}"
+             class="song-image mb-3">
+        {% endif %}
 
-               <h3 class="text-white fw-bold">
-                 {{ song[1] }}
-                </h3> 
+        <h3 class="song-title" title="{{ song[1] }}">
+            {{ song[1] }}
+        </h3>
 
-                <p class="text-light">
-                    Singer: {{ song[2] }}
-                </p>
+        <p class="text-light">
+            Singer: {{ song[2] }}
+        </p>
 
-                <p class="category">
-                 Category: {{ song[5] }}
-               </p>
+        <p class="category">
+            Category: {{ song[5] }}
+        </p>
 
-                 <p class="text-danger">
-                ❤️ Likes: {{ song[6] }}
-                </p>
-                 {% for rate in ratings %}
+        <p class="text-danger">
+            ❤️ Likes: {{ song[6] }}
+        </p>
 
-             {% if rate[0] == song[0] %}
-
+        {% for rate in ratings %}
+            {% if rate[0] == song[0] %}
             <p class="text-warning">
-                 ⭐ Rating: {{ "%.1f"|format(rate[1]) }}/5
-             </p>
-
-               {% endif %}
-
-               {% endfor %}
-               <p class="text-info">
-               ▶️ Plays: {{ song[7] }}
-               </p>
-
-              <audio
-                controls
-                style="width:100%;"
-                onplay="saveRecentSong({{ song[0] }})">
-
-                <source src="{{ url_for('static', filename='songs/' + song[3]) }}">
-            </audio>
-
-                <br><br>
-
-                <a href="/favorite/{{ song[0] }}"
-                class="btn btn-danger w-100">
-              ❤️ Favorite
-          </a>
-          
-        <form action="/add_review/{{ song[0] }}"
-         method="POST"
-        class="mt-3">
-
-        <select name="rating"
-            class="form-control mb-2"
-            required>
-
-        <option value="">⭐ Rating</option>
-        <option value="5">⭐⭐⭐⭐⭐</option>
-        <option value="4">⭐⭐⭐⭐</option>
-        <option value="3">⭐⭐⭐</option>
-        <option value="2">⭐⭐</option>
-        <option value="1">⭐</option>
-
-        </select>
-
-        <textarea
-           name="comment"
-           class="form-control mb-2"
-           placeholder="Write Review..."
-           required>
-        </textarea>
-
-        <button class="btn btn-info w-100">
-            Submit Review
-         </button>
-
-          </form>
-          <a href="/select_playlist/{{ song[0] }}"
-            class="btn btn-success w-100 mt-2">
-            ➕ Add To Playlist
-           </a>
-            
-            <a href="/download/{{ song[3] }}"
-            class="btn btn-info w-100 mt-2">
-            ⬇ Download Song
-            </a>
-
-        </div>
-
+                ⭐ Rating: {{ "%.1f"|format(rate[1]) }}/5
+            </p>
+            {% endif %}
         {% endfor %}
+
+        <p class="text-info">
+            ▶️ Plays: {{ song[7] }}
+        </p>
+
+        <audio controls style="width:100%;"
+               onplay="saveRecentSong({{ song[0] }})">
+            <source src="{{ url_for('static', filename='songs/' + song[3]) }}">
+        </audio>
+
+        <br><br>
+
+        <a href="/favorite/{{ song[0] }}"
+           class="btn btn-danger w-100">
+            ❤️ Favorite
+        </a>
+
+        <form action="/add_review/{{ song[0] }}"
+              method="POST"
+              class="mt-3">
+
+            <select name="rating"
+                    class="form-control mb-2"
+                    required>
+
+                <option value="">⭐ Rating</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="1">⭐</option>
+
+            </select>
+
+            <textarea
+                name="comment"
+                class="form-control mb-2"
+                placeholder="Write Review..."
+                required></textarea>
+
+            <button class="btn btn-info w-100">
+                Submit Review
+            </button>
+
+        </form>
+
+        <a href="/select_playlist/{{ song[0] }}"
+           class="btn btn-success w-100 mt-2">
+            ➕ Add To Playlist
+        </a>
+
+        <a href="/download/{{ song[0] }}"
+           class="btn btn-info w-100 mt-2">
+            ⬇ Download Song
+        </a>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
 
     </div>
 
@@ -359,13 +329,13 @@ function saveRecentSong(songId){
 
     const audios = document.querySelectorAll("audio");
 
-    audios.forEach(audio => {
+audios.forEach(audio => {
 
     audio.addEventListener("play", function() {
 
         audios.forEach(otherAudio => {
 
-            if (otherAudio !== this) {
+            if(otherAudio !== this){
                 otherAudio.pause();
             }
 
@@ -373,8 +343,21 @@ function saveRecentSong(songId){
 
     });
 
-   });
+    audio.addEventListener("ended", function() {
+
+        let currentIndex = Array.from(audios).indexOf(this);
+
+        let nextAudio = audios[currentIndex + 1];
+
+        if(nextAudio){
+            nextAudio.play();
+        }
+
+    });
+
+});
 
 </script>
+
 </body>
 </html>

@@ -4,13 +4,14 @@ from flask_mysqldb import MySQL
 from flask import send_from_directory
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 app.secret_key = "musicify123"
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'your_password'
+app.config['MYSQL_PASSWORD'] = 'sumitpatel05'
 app.config['MYSQL_DB'] = 'musicify_db'
 
 mysql = MySQL(app)
@@ -282,9 +283,7 @@ def songs():
 
     else:
 
-        cur.execute(
-            "SELECT * FROM songs"
-        )
+        cur.execute("SELECT * FROM songs")
 
     songs = cur.fetchall()
 
@@ -292,22 +291,23 @@ def songs():
     reviews = cur.fetchall()
 
     cur.execute("""
-     SELECT song_id,
-     AVG(rating)
-     FROM reviews
-     GROUP BY song_id
-     """)
+        SELECT song_id,
+        AVG(rating)
+        FROM reviews
+        GROUP BY song_id
+    """)
 
     ratings = cur.fetchall()
 
     cur.close()
 
     return render_template(
-    "songs.html",
-    songs=songs,
-    reviews=reviews,
-    ratings=ratings
-)
+        'songs.html',
+        songs=songs,
+        reviews=reviews,
+        ratings=ratings
+    )
+
 @app.route('/logout')
 def logout():
 
@@ -350,14 +350,17 @@ def delete_song(id):
     cur.close()
 
     return redirect('/admin')
-
 @app.route('/edit_song/<int:id>', methods=['GET', 'POST'])
 def edit_song(id):
 
     cur = mysql.connection.cursor()
 
     # Song Fetch
-    cur.execute("SELECT * FROM songs WHERE id=%s", (id,))
+    cur.execute(
+        "SELECT * FROM songs WHERE id=%s",
+        (id,)
+    )
+
     song = cur.fetchone()
 
     if not song:
@@ -369,12 +372,53 @@ def edit_song(id):
         song_name = request.form.get('song_name')
         singer = request.form.get('singer')
 
-        cur.execute(
-            "UPDATE songs SET song_name=%s, singer=%s WHERE id=%s",
-            (song_name, singer, id)
-        )
+        image = request.files.get('image')
+
+        if image and image.filename != "":
+
+            filename = secure_filename(image.filename)
+
+            image.save(
+                os.path.join(
+                    "static/images",
+                    filename
+                )
+            )
+
+            cur.execute(
+                """
+                UPDATE songs
+                SET song_name=%s,
+                    singer=%s,
+                    image=%s
+                WHERE id=%s
+                """,
+                (
+                    song_name,
+                    singer,
+                    filename,
+                    id
+                )
+            )
+
+        else:
+
+            cur.execute(
+                """
+                UPDATE songs
+                SET song_name=%s,
+                    singer=%s
+                WHERE id=%s
+                """,
+                (
+                    song_name,
+                    singer,
+                    id
+                )
+            )
 
         mysql.connection.commit()
+
         cur.close()
 
         return redirect('/admin')
@@ -385,7 +429,6 @@ def edit_song(id):
         'edit_song.html',
         song=song
     )
-
 @app.route('/favorite/<int:id>')
 def favorite(id):
 
@@ -474,6 +517,7 @@ def add_song():
         song_name = request.form['song_name']
         singer = request.form['singer']
         category = request.form['category']
+
         audio = request.files['audio']
         image = request.files['image']
 
@@ -481,15 +525,12 @@ def add_song():
 
             cur = mysql.connection.cursor()
 
-            cur.execute(
-                """
+            cur.execute("""
                 SELECT *
                 FROM songs
                 WHERE song_name=%s
                 AND singer=%s
-                """,
-                (song_name, singer)
-            )
+            """, (song_name, singer))
 
             already = cur.fetchone()
 
@@ -502,34 +543,45 @@ def add_song():
                     error="This song already exists!"
                 )
 
+            # Category folder create if not exists
+            category_folder = os.path.join(
+                'static',
+                'songs',
+                category
+            )
+
+            os.makedirs(category_folder, exist_ok=True)
+
+            # Save audio in category folder
             audio.save(
                 os.path.join(
-                    'static/songs',
+                    category_folder,
                     audio.filename
                 )
             )
 
+            # Save image
             image.save(
                 os.path.join(
-                    'static/images',
+                    'static',
+                    'images',
                     image.filename
                 )
             )
 
-            cur.execute(
-                """
+            # Insert into database
+            cur.execute("""
                 INSERT INTO songs
                 (song_name, singer, file_name, image, category)
                 VALUES(%s,%s,%s,%s,%s)
-                """,
-                (
-                    song_name,
-                    singer,
-                    audio.filename,
-                    image.filename,
-                    category
-                )
-            )
+            """,
+            (
+                song_name,
+                singer,
+                audio.filename,
+                image.filename,
+                category
+            ))
 
             mysql.connection.commit()
             cur.close()
@@ -690,9 +742,9 @@ def change_password():
         cur = mysql.connection.cursor()
 
         cur.execute(
-        "SELECT * FROM users WHERE id=%s",
-        (session['user'],)
-       )
+            "SELECT * FROM users WHERE id=%s",
+            (session['user_id'],)
+        )
 
         user = cur.fetchone()
 
@@ -712,19 +764,20 @@ def change_password():
         hashed_password = generate_password_hash(new_password)
 
         cur.execute(
-          "UPDATE users SET password=%s WHERE id=%s",
-          (hashed_password, session['user_id'])
+            "UPDATE users SET password=%s WHERE id=%s",
+            (hashed_password, session['user_id'])
         )
 
         mysql.connection.commit()
         cur.close()
 
         return render_template(
-        'change_password.html',
-         success="Password Changed Successfully"
+            'change_password.html',
+            success="Password Changed Successfully"
         )
 
-        return render_template('change_password.html')
+    # GET request ke liye
+    return render_template('change_password.html')
 
 @app.route('/manage_users')
 def manage_users():
@@ -1143,30 +1196,31 @@ def add_review(song_id):
 
     return redirect('/songs')
 
-@app.route('/download/<filename>')
-def download_song(filename):
+@app.route('/download/<int:song_id>')
+def download_song(song_id):
 
-    if 'user' in session:
+    cur = mysql.connection.cursor()
 
-        cur = mysql.connection.cursor()
+    cur.execute("""
+        SELECT file_name, category
+        FROM songs
+        WHERE id=%s
+    """, (song_id,))
 
-        cur.execute(
-            """
-            INSERT INTO downloads
-            (username, song_name)
-            VALUES(%s,%s)
-            """,
-            (session['user'], filename)
-        )
+    song = cur.fetchone()
+    cur.close()
 
-        mysql.connection.commit()
-        cur.close()
+    if not song:
+        return "Song not found"
+
+    file_name = song[0]
+    category = song[1]
 
     return send_from_directory(
-        'static/songs',
-        filename,
-        as_attachment=True
-    )
+    'static/songs',
+    file_name,
+    as_attachment=True
+)
 
 @app.route('/upload_profile', methods=['POST'])
 def upload_profile():
